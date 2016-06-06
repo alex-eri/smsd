@@ -84,7 +84,7 @@ def run():
         threads.append(smsd)
         smsd.start()
 
-    if config['polling_port']:
+    if config.get('polling_port'):
         t = polling.new()
         threads.append(t)
         t.start()
