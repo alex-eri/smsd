@@ -1,13 +1,8 @@
 from gsmmodem.modem import GsmModem
 import threading
-import sys
 import time
 
-try:
-    import Queue as queue
-except ImportError:
-    import queue
-
+import sys
 PYTHON_VERSION = sys.version_info[0]
 if PYTHON_VERSION >= 3:
     def unicode(data):
@@ -29,4 +24,5 @@ class Modem(threading.Thread):
             phone,text = self.smsq.get()
             print(phone,text)
             sms = self.modem.sendSms(phone,text)
+            self.smsq.task_done()
             time.sleep(1)

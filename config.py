@@ -3,3 +3,6 @@ modems = [
 ]
 
 port=8000
+polling_port=8001
+
+secret='secret'

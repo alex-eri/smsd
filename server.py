@@ -2,6 +2,7 @@ import threading
 import BaseHTTPServer
 import modem
 import urlparse
+import polling
 
 try:
     import Queue as queue
@@ -17,27 +18,51 @@ class Server(BaseHTTPServer.HTTPServer):
         
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_GET(self):
-        print(self.path)
         p = urlparse.urlparse( self.path ).query
+        return self.exec_query(p)
+        
+    def do_POST(self):
+        p = rfile.read()
+        return self.exec_query(p)
+            
+            
+    def exec_query(self,p):
         q = urlparse.parse_qs(p)
         phones = q.get('phone',[])
-
+        text = q.get('text')
+        secret = q.get('secret')
+        
         valid = True
         
         if self.server.config.get('secret') and (self.server.config.get('secret') != secret[0]):
             valid = False
-        text = q.get('text')
-        secret = q.get('secret')
         
         if text and valid:
             
             text = text[0].decode('utf-8')
         
-            for phone in phones:
-                phone=phone.replace(' ', '+', 1)
-                sms = (phone,text)
-                print(sms)
-                self.server.smsq.put(sms)
+            for phonefield in phones:
+                phonefield = phonefield.replace(' ', '+', 1)
+                for phone in phonefield.split(','):
+                    sms = (phone,text)
+                    print(sms)
+                    self.server.smsq.put(sms)
+                    
+            self.send_response(200)
+		    self.send_header('Content-type','text/plain')
+		    self.end_headers()
+            self.wfile.write("OK")
+            return
+            
+       elif valid:
+            self.send_response(400)
+       else:
+            self.send_response(403)
+       self.send_header('Content-type','text/plain')
+       self.end_headers()
+       self.wfile.write("ERROR")
+       
+
 
 def run():
     config={}
@@ -55,15 +80,23 @@ def run():
         
     for device in config['modems']:
         smsd = modem.Modem(device,smsq)
+        smsd.daemon = True
         threads.append(smsd)
         smsd.start()
 
+    if config['polling_port']:
+        t = polling.new()
+        threads.append(t)
+        t.start()
     
-
-    while True:
-        
-        for d in threads:
-            d.join(3)
+    try:
+        while True:
+            for d in threads:
+                d.join(3)
+    except KeyboardInterrupt:
+        server.shutdown()
+        smsq.join()
+        exit()
         
         
 if __name__ == "__main__":
