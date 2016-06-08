@@ -4,6 +4,7 @@ import modem
 import urlparse
 import polling
 import httpget
+import logging
 
 try:
     import Queue as queue
