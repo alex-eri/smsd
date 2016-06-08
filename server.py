@@ -3,6 +3,7 @@ import BaseHTTPServer
 import modem
 import urlparse
 import polling
+import httpget
 
 try:
     import Queue as queue
@@ -79,10 +80,17 @@ def run():
     threads = [httpd]
         
     for device in config['modems']:
-        smsd = modem.Modem(device,smsq)
+        smsd = modem.Modem(smsq,device)
         smsd.daemon = True
         threads.append(smsd)
         smsd.start()
+
+    for httpapi in config['httpapis']:
+        apid = httpget.ApiClient(smsq,**httpapi)
+        apid.daemon = True
+        threads.append(apid)
+        apid.start()
+        
 
     if config.get('polling_port'):
         t = polling.new()

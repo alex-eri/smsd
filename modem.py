@@ -1,8 +1,10 @@
 from gsmmodem.modem import GsmModem
 import threading
 import time
-
+import logging
 import sys
+
+
 PYTHON_VERSION = sys.version_info[0]
 if PYTHON_VERSION >= 3:
     def unicode(data):
@@ -11,7 +13,7 @@ if PYTHON_VERSION >= 3:
         return data
 
 class Modem(threading.Thread):
-    def __init__(self,device, smsq, *a,**kw):
+    def __init__(self, smsq, device, *a,**kw):
         self.modem = GsmModem(device,9600)
         self.smsq = smsq
 
@@ -22,7 +24,7 @@ class Modem(threading.Thread):
         
         while True:
             phone,text = self.smsq.get()
-            print(phone,text)
+            logging.debug('modem to {} text: {}'.format(phone,text))
             sms = self.modem.sendSms(phone,text)
             self.smsq.task_done()
             time.sleep(1)
