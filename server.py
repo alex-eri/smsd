@@ -54,13 +54,13 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write("OK")
             return
-       elif valid:
+        elif valid:
             self.send_response(400)
-       else:
+        else:
             self.send_response(403)
-       self.send_header('Content-type','text/plain')
-       self.end_headers()
-       self.wfile.write("ERROR")
+        self.send_header('Content-type','text/plain')
+        self.end_headers()
+        self.wfile.write("ERROR")
        
 
 
