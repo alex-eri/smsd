@@ -46,7 +46,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
                 phonefield = phonefield.replace(' ', '+', 1)
                 for phone in phonefield.split(','):
                     sms = (phone,text)
-                    print(sms)
+                    logging.debug(sms)
                     self.server.smsq.put(sms)
                     
             self.send_response(200)
@@ -107,5 +107,6 @@ def run():
         
         
 if __name__ == "__main__":
+    logging.basicConfig(level = logging.DEBUG)
 
     run()
