@@ -78,13 +78,13 @@ def run():
     
     threads = [httpd]
         
-    for device in config['modems']:
+    for device in config.get('modems',[]):
         smsd = modem.Modem(smsq,device)
         smsd.daemon = True
         threads.append(smsd)
         smsd.start()
 
-    for httpapi in config['httpapis']:
+    for httpapi in config.get('httpapis',[]):
         apid = httpget.ApiClient(smsq,**httpapi)
         apid.daemon = True
         threads.append(apid)
