@@ -32,7 +32,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         q = urlparse.parse_qs(p)
         phones = q.get('phone',[])
         text = q.get('text')
-        secret = q.get('secret')
+        secret = q.get('secret',[False])
         
         valid = True
         
