@@ -24,7 +24,7 @@ class Modem(threading.Thread):
         
         while True:
             phone,text = self.smsq.get()
-            logging.debug('modem to {} text: {}'.format(phone,text))
+            logging.debug(u'modem to {} text: {}'.format(phone,text))
             sms = self.modem.sendSms(phone,text)
             self.smsq.task_done()
             time.sleep(1)
