@@ -54,7 +54,6 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write("OK")
             return
-            
        elif valid:
             self.send_response(400)
        else:
