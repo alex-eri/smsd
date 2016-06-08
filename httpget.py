@@ -1,4 +1,5 @@
 import threading
+import sys
 
 PYTHON_VERSION = sys.version_info[0]
 if PYTHON_VERSION >= 3:
