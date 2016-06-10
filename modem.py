@@ -30,6 +30,7 @@ class Modem(threading.Thread):
                     self.smsq.task_done()
                     time.sleep(2)
             except Exception as e:
+                self.modem.close()
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 logging.error(type(e))
                 logging.error(e.message)
