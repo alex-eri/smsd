@@ -1,0 +1,14 @@
+#!/bin/bash
+
+TEXT=${!#}
+PHONES=${@:1:$(($# - 1))}
+
+DIR=$( dirname "${BASH_SOURCE[0]}" )
+
+SECRET=$(cat $DIR/config.py | grep -e "^secret" | grep "=" | tail -n 1 | tr \" \' | cut -d \' -f 2)
+
+for PHONE in ${PHONES}
+do
+        echo    wget -O- "http://localhost:8000/?phone=+${PHONE}&text=${TEXT}&secret=${SECRET}" 
+        wget -O- "http://localhost:8000/?phone=+${PHONE}&text=${TEXT}&secret=${SECRET}" 2>/dev/null
+done
