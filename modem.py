@@ -2,7 +2,7 @@ from gsmmodem.modem import GsmModem
 import threading
 import time
 import logging
-import sys
+import sys, traceback
 
 
 PYTHON_VERSION = sys.version_info[0]
@@ -20,11 +20,17 @@ class Modem(threading.Thread):
         return super(Modem,self).__init__(*a,**kw)
 
     def run(self):
-        self.modem.connect()
-        
         while True:
-            phone,text = self.smsq.get()
-            logging.debug(u'modem to {} text: {}'.format(phone,text))
-            sms = self.modem.sendSms(phone,text)
-            self.smsq.task_done()
-            time.sleep(1)
+            self.modem.connect()
+            try:        
+                while True:
+                    phone,text = self.smsq.get()
+                    logging.debug(u'modem to {} text: {}'.format(phone,text))
+                    sms = self.modem.sendSms(phone,text)
+                    self.smsq.task_done()
+                    time.sleep(2)
+            except Exception as e:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                logging.error(type(e))
+                logging.error(e.message)
+                logging.debug(traceback.format_tb(exc_traceback))
