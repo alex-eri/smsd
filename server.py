@@ -5,6 +5,7 @@ import urlparse
 import polling
 import httpget
 import logging
+import os
 
 try:
     import Queue as queue
@@ -67,7 +68,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 def run():
     config={}
-    execfile('config.py',config,config)
+    filename = os.path.join(os.path.dirname(__file__),'config.py')
+    execfile(filename, config, config)
     
     smsq = queue.Queue()
 
