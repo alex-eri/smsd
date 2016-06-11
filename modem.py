@@ -21,7 +21,11 @@ class Modem(threading.Thread):
 
     def run(self):
         while True:
-            self.modem.connect()
+            try:
+                self.modem.connect()
+            except IOError:
+                time.sleep(5)
+                continue
             try:        
                 while True:
                     phone,text = self.smsq.get()

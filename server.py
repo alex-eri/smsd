@@ -77,6 +77,7 @@ def run():
     server = Server(smsq, config, server_address, Handler)
 
     httpd = threading.Thread(target=server.serve_forever)
+    
     httpd.start()
     
     threads = [httpd]
@@ -95,7 +96,7 @@ def run():
         
 
     if config.get('polling_port'):
-        t = polling.new()
+        t = polling.new(smsq,config)
         threads.append(t)
         t.start()
     
@@ -103,7 +104,7 @@ def run():
         while True:
             for d in threads:
                 d.join(3)
-    except KeyboardInterrupt:
+    except  (KeyboardInterrupt, SystemExit):
         server.shutdown()
         smsq.join()
         exit()
