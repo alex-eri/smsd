@@ -282,7 +282,7 @@ def encodeSmsSubmitPdu(number, text, reference=0, validity=None, smsc=None, requ
         alphabet = 0x08 # UCS2
     else:
         alphabet = 0x00 # GSM-7    
-           
+        
     # Check if message should be concatenated
     if len(text) > MAX_MESSAGE_LENGTH[alphabet]:
         # Text too long for single PDU - add "concatenation" User Data Header
