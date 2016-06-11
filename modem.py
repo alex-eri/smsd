@@ -24,6 +24,7 @@ class Modem(threading.Thread):
             try:
                 self.modem.connect()
             except IOError:
+                logging.info('Modem used by another process')
                 time.sleep(5)
                 continue
             try:        
