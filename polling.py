@@ -1,5 +1,14 @@
 import threading
-import BaseHTTPServer
+import sys
+
+PYTHON_VERSION = sys.version_info[0]
+if PYTHON_VERSION >= 3:
+    import urllib.parse as urlparse
+    import http.server as BaseHTTPServer
+else:
+    import urlparse
+    import BaseHTTPServer
+    
 import json
 import socket
 
@@ -38,12 +47,12 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.server.smsq.task_done()
             self.send_response(200)
             self.end_headers()
-            self.wfile.write(json.dumps(sms))
+            self.wfile.write(bytes(json.dumps(sms)))
         except queue.Empty:
             self.send_response(204)
             self.end_headers()
-            self.wfile.write("[]")
-        except socket.timeout, e:
+            self.wfile.write(b"[]")
+        except socket.timeout as e:
             raise e                                      
             
 

@@ -1,11 +1,23 @@
 import threading
-import BaseHTTPServer
 import modem
-import urlparse
+
 import polling
 import httpget
 import logging
 import os
+
+import sys
+
+PYTHON_VERSION = sys.version_info[0]
+if PYTHON_VERSION >= 3:
+    import urllib.parse as urlparse
+    import http.server as BaseHTTPServer
+    def execfile(filename, gl, lo):
+        return exec(open(filename, "rb").read(), gl, lo)
+    
+else:
+    import urlparse
+    import BaseHTTPServer
 
 try:
     import Queue as queue
@@ -18,6 +30,7 @@ class Server(BaseHTTPServer.HTTPServer):
         self.smsq = smsq
         self.config = config
         BaseHTTPServer.HTTPServer.__init__(self,*a,**kw)
+        
         
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_GET(self):
@@ -41,8 +54,10 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
             valid = False
         
         if text and valid:
-            
-            text = text[0].decode('utf-8')
+            if type(text[0]) == bytes:
+                text = text[0].decode('utf-8')
+            else:
+                text = text[0]
         
             for phonefield in phones:
                 phonefield = phonefield.replace(' ', '+', 1)
@@ -54,7 +69,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type','text/plain')
             self.end_headers()
-            self.wfile.write("OK")
+            self.wfile.write(b"OK")
+            logging.debug('Queued')
             return
         elif valid:
             self.send_response(400)
@@ -62,7 +78,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(403)
         self.send_header('Content-type','text/plain')
         self.end_headers()
-        self.wfile.write("ERROR")
+        self.wfile.write(b"ERROR")
        
 
 

@@ -1,7 +1,7 @@
 modems = [
-    '/dev/serial/by-id/usb-HUAWEI_Technology_HUAWEI_Mobile-if00-port0'
+    '/dev/serial/by-id/usb-HUAWEI_Technology_HUAWEI_Mobile-if02-port0'
 ]
-
+'''
 httpapis = [
     {
     'url': 'http://smspilot.ru/api.php',
@@ -9,7 +9,7 @@ httpapis = [
     'post': False
     }
 ]
-
+'''
 port=8000
 polling_port=8001
 

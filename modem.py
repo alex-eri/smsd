@@ -14,7 +14,7 @@ if PYTHON_VERSION >= 3:
 
 class Modem(threading.Thread):
     def __init__(self, smsq, device, *a,**kw):
-        self.modem = GsmModem(device,9600)
+        self.modem = GsmModem(device,9600,dsrdtr=True,rtscts=True)
         self.smsq = smsq
 
         return super(Modem,self).__init__(*a,**kw)
@@ -24,7 +24,8 @@ class Modem(threading.Thread):
             try:
                 self.modem.connect()
             except IOError:
-                logging.info('Modem used by another process')
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                logging.debug(traceback.format_tb(exc_traceback))
                 time.sleep(5)
                 continue
             try:        
