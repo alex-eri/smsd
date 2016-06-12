@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import threading
 import modem
 
@@ -13,7 +15,7 @@ if PYTHON_VERSION >= 3:
     import urllib.parse as urlparse
     import http.server as BaseHTTPServer
     def execfile(filename, gl, lo):
-        return exec(open(filename, "rb").read(), gl, lo)
+        exec(open(filename, "rb").read(), gl, lo)
     
 else:
     import urlparse
@@ -89,7 +91,7 @@ def run():
     
     smsq = queue.Queue()
 
-    server_address = ('', config['port'])
+    server_address = ('', config.get('port'))
     server = Server(smsq, config, server_address, Handler)
 
     httpd = threading.Thread(target=server.serve_forever)
