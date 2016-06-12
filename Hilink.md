@@ -7,8 +7,9 @@
 ```
 
 ответ
+```
 OK
-
+```
 
 ZTE
 пример запроса POST http://192.168.0.1/goform/goform_set_cmd_process
@@ -18,4 +19,8 @@ Content-Type:application/x-www-form-urlencoded; charset=UTF-8
 ```
 isTest=false&goformId=SEND_SMS&notCallback=true&Number=%2B79158327039&sms_time=16%3B06%3B12%3B23%3B03%3B03%3B%2B3&MessageBody=041F04400438043204350442&ID=-1&encode_type=UNICODE
 Name	
+```
+Ответ
+```
+{"result":"success"}
 ```
