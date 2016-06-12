@@ -26,7 +26,7 @@ class Modem(threading.Thread):
             except IOError:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 logging.debug(traceback.format_tb(exc_traceback))
-                time.sleep(5)
+                time.sleep(10)
                 continue
             try:        
                 while True:
@@ -34,7 +34,7 @@ class Modem(threading.Thread):
                     logging.debug(u'modem to {} text: {}'.format(phone,text))
                     sms = self.modem.sendSms(phone,text)
                     self.smsq.task_done()
-                    time.sleep(2)
+                    time.sleep(10)
             except Exception as e:
                 self.modem.close()
                 exc_type, exc_value, exc_traceback = sys.exc_info()
