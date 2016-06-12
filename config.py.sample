@@ -9,6 +9,11 @@ httpapis = [
     'post': False
     }
 ]
+
+pollings = [
+    ('http://10.1.1.2:8001','secret')
+]
+
 '''
 port=8000
 polling_port=8001

@@ -5,13 +5,6 @@ import logging
 import sys, traceback
 
 
-PYTHON_VERSION = sys.version_info[0]
-if PYTHON_VERSION >= 3:
-    def unicode(data):
-        if type(data, bytes):
-            return data.decode('utf-8')
-        return data
-
 class Modem(threading.Thread):
     def __init__(self, smsq, device, *a,**kw):
         self.modem = GsmModem(device,9600,dsrdtr=True,rtscts=True)

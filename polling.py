@@ -43,7 +43,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
                 self.end_headers()
         
         try:
-            sms = self.server.smsq.get(timeout=30)
+            sms = self.server.smsq.get(timeout=25)
             self.server.smsq.task_done()
             self.send_response(200)
             self.end_headers()
@@ -55,9 +55,30 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         except socket.timeout as e:
             raise e                                      
             
-
+            
+class Client(threading.Thread):
+    def __init__(self, smsq, url,secret=None, *a,**kw):
+        self.smsq = smsq
+        if secret:
+            self.request = url + "?secret=" + secret
+        else:
+            self.request = url
+        return super(Client,self).__init__(*a,**kw)
         
-
+    def run(self):
+        while True:
+            try:
+                response = urllib2.urlopen(self.request, timeout=30).read().decode('utf-8')
+            except:
+                response = '[]'
+            if response:
+                try:
+                    sms = json.loads(response)
+                    self.smsq.put(sms)
+                except json.decoder.JSONDecodeError:
+                    logging.error('bad data from '+self.request)
+            
+    
 
 def new(smsq, config):
     server_address = ('', config['polling_port'])

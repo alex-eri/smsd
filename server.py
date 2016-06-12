@@ -118,6 +118,12 @@ def run():
         threads.append(t)
         t.start()
     
+    for request in config.get('pollings',[]):
+        requestd = polling.Client(smsq,*request)
+        requestd.daemon = True
+        threads.append(requestd)
+        requestd.start()
+        
     try:
         while True:
             for d in threads:
