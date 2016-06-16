@@ -19,6 +19,7 @@ class Modem(threading.Thread):
             try:
                 self.modem.connect()
             except (TimeoutException,IOError) as e:
+                self.modem.close()
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 logging.debug(traceback.format_tb(exc_traceback))
                 time.sleep(10)
