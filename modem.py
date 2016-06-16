@@ -1,4 +1,6 @@
 from gsmmodem.modem import GsmModem
+from gsmmodem.exceptions import TimeoutException
+
 import threading
 import time
 import logging
@@ -16,7 +18,7 @@ class Modem(threading.Thread):
         while True:
             try:
                 self.modem.connect()
-            except IOError:
+            except (TimeoutException,IOError) as e:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 logging.debug(traceback.format_tb(exc_traceback))
                 time.sleep(10)
